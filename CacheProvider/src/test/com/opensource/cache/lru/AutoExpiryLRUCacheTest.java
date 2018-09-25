@@ -26,6 +26,11 @@ public class AutoExpiryLRUCacheTest {
 		lruCache.add("Key 02", "Value 02 Updated");
 		lruCache.printCacheEntries();
 		System.out.println("Key 03: " + lruCache.retrieve("Key 03"));
+		/*
+		 * Sleep for 15 seconds to see how cleanup thread removes expired entries from cache.
+		 * Then JVM should be terminated as the cleanup thread is a daemon thread
+		 */
+		sleep(15000);
 	}
 	
 	public static void main(String[] args) {

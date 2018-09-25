@@ -41,7 +41,8 @@ public class AutoExpiryLRUCache<K, V> implements Cache<K, V> {
 		this.expiryTimeInMilliSeconds = expiryTimeInMilliSeconds;
 		lruCache = new HashMap<K, ValueWrapper<V>>();
 		CacheCleaner cacheCleaner = new CacheCleaner();
-		Thread cleanupThread = new Thread(cacheCleaner) ;
+		Thread cleanupThread = new Thread(cacheCleaner);
+		cleanupThread.setDaemon(true); // Cleanup thread should be daemon
 		cleanupThread.start();
 	}
 	
