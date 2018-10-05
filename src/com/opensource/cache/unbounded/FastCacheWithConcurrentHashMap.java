@@ -7,7 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.opensource.cache.Cache;
 
 /**
- * 
+ * Copyright (c) 2018. Open source Project.
+ *
  * @author Soumyadipta Sarkar
  *
  * @param <K> Cache Key type
