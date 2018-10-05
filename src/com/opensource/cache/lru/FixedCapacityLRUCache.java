@@ -9,11 +9,12 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.opensource.cache.Cache;
 
 /**
+ * Copyright (c) 2018. Open source Project.
  * 
  * @author Soumyadipta Sarkar
  *
- * @param <K> Cache Key type
- * @param <V> Cache Value type
+ * @param <K> The type of key maintained by the Cache
+ * @param <V> The type of value maintained by the Cache
  * 
  * FixedCapacityLRUCache extends LinkedHashMap to restrict the maximum number of entries
  * at a given point of time. LinkedHashMap internally uses a HashMap and a doubly LinkedList (Queue).
@@ -38,13 +39,13 @@ public class FixedCapacityLRUCache<K, V> extends LinkedHashMap<K, V> implements 
 	
 	private void checkNullKey(K key) {
 		if (key == null) {
-			throw new IllegalArgumentException("Key cannot be null.");
+			throw new NullPointerException("Key cannot be null.");
 		}
 	}
 	
 	private void checkNullValue(V value) {
 		if (value == null) {
-			throw new IllegalArgumentException("Value cannot be null.");
+			throw new NullPointerException("Value cannot be null.");
 		}
 	}
 	
@@ -63,13 +64,16 @@ public class FixedCapacityLRUCache<K, V> extends LinkedHashMap<K, V> implements 
         }	
     }
 	
+	/**
+	 * Returns maximum capacity of the Cache.
+	 * @return maxCapacity Maximum capacity of the Cache
+	 */
 	public int getMaxCapacity() {
 		return maxCapacity;
 	}
 	
 	/*
 	 * This method is thread safe.
-	 * This method throws IllegalArgumentException if either key or value is null.
 	 * @see lru_cache.Cache#add(java.lang.Object, java.lang.Object)
 	 */
 	@Override
@@ -85,8 +89,7 @@ public class FixedCapacityLRUCache<K, V> extends LinkedHashMap<K, V> implements 
 	}
 	
 	/*
-	 * This method is thread safe.
-	 * This method throws IllegalArgumentException if key is null.
+	 * This method is thread safe. 
 	 * @see lru_cache.Cache#retrieve(java.lang.Object)
 	 */
 	@Override
@@ -101,9 +104,7 @@ public class FixedCapacityLRUCache<K, V> extends LinkedHashMap<K, V> implements 
 	}
 	
 	/*
-	 * This is a sensitive operation. It clears all the entries from the cache.
-	 * This method is thread safe.
-	 * Running time complexity of the method is O(n).
+	 * This method is thread safe. Running time complexity of the method is O(n).
 	 * @see java.util.LinkedHashMap#clear()
 	 */
 	@Override
@@ -117,7 +118,6 @@ public class FixedCapacityLRUCache<K, V> extends LinkedHashMap<K, V> implements 
 	}
 	
 	/*
-	 * Call this method to remove an entry from the cache.
 	 * This method is thread safe. 
 	 * @see com.opensource.cache.Cache#invalidateEntry(java.lang.Object)
 	 */
@@ -133,7 +133,7 @@ public class FixedCapacityLRUCache<K, V> extends LinkedHashMap<K, V> implements 
 	}
 	
 	/*
-	 * This method is thread safe.
+	 * This method is thread safe. 
 	 * @see com.opensource.cache.Cache#size()
 	 */
 	@Override
@@ -147,9 +147,7 @@ public class FixedCapacityLRUCache<K, V> extends LinkedHashMap<K, V> implements 
 	}
 	
 	/*
-	 * This method is a costly operation. Use it only for testing or debugging.
-	 * This method is not thread safe.
-	 * Running time complexity of the method is O(n).
+	 * This method is not thread safe. Running time complexity of the method is O(n).
 	 * @see lru_cache.Cache#printCacheEntries()
 	 */
 	@Override

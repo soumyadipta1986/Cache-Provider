@@ -3,6 +3,13 @@ package test.com.opensource.cache.lru;
 import com.opensource.cache.Cache;
 import com.opensource.cache.CacheFactory;
 
+/**
+ * Copyright (c) 2018. Open source Project.
+ * 
+ * @author Soumyadipta Sarkar
+ * 
+ * Test class to validate com.opensource.cache.lru.AutoExpiryLRUCache
+ */
 public class AutoExpiryLRUCacheTest {
 	
 	private void sleep(int milliSeconds) {

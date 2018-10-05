@@ -12,15 +12,16 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import com.opensource.cache.Cache;
 
 /**
+ * Copyright (c) 2018. Open source Project.
  * 
  * @author Soumyadipta Sarkar
  *
- * @param <K> Cache Key type
- * @param <V> Cache Value type
+ * @param <K> The type of key maintained by the Cache
+ * @param <V> The type of value maintained by the Cache
  * 
  * AutoExpiryLRUCache clears the entries automatically from its internal HashMap if 
  * entries are not accessed for more than a certain amount of time (in milliseconds). 
- * Cleanup is done by a separate thread. 
+ * Cleanup is done by a separate daemon thread. 
  * AutoExpiryLRUCache is unbounded and completely thread safe.
  * It uses ReentrantReadWriteLock (Read Write pair lock) to speed up the retrieval operation.  
  * This cache implementation does not allow null key or value.
@@ -42,26 +43,26 @@ public class AutoExpiryLRUCache<K, V> implements Cache<K, V> {
 		lruCache = new HashMap<K, ValueWrapper<V>>();
 		CacheCleaner cacheCleaner = new CacheCleaner();
 		Thread cleanupThread = new Thread(cacheCleaner);
-		cleanupThread.setDaemon(true); // Cleanup thread should be daemon
+		cleanupThread.setDaemon(true); // Cleanup thread must be a daemon thread
 		cleanupThread.start();
 	}
 	
 	private void checkNullKey(K key) {
 		if (key == null) {
-			throw new IllegalArgumentException("Key cannot be null.");
+			throw new NullPointerException("Key cannot be null.");
 		}
 	}
 	
 	private void checkNullValue(V value) {
 		if (value == null) {
-			throw new IllegalArgumentException("Value cannot be null.");
+			throw new NullPointerException("Value cannot be null.");
 		}
 	}
 	
-	/*
-	 * This is a costly operation. This method removes all the expired entries from cache.
+	/**
+	 * Removes all the expired entries from Cache.
 	 * This method is thread safe and protected by Write Lock.
-	 * Running time complexity of the method is O(n). 
+	 * Running time complexity of the method is O(n).
 	 */
 	private void removeExpiredEntries() {
 		System.out.println("*************** removeExpiredEntries starts **********************");
@@ -89,13 +90,18 @@ public class AutoExpiryLRUCache<K, V> implements Cache<K, V> {
 		System.out.println("*************** removeExpiredEntries ends **********************");
 	}
 	
+	/**
+	 * Returns expiry time in milliSeconds after which Cache entries will
+	 * get expired if not accessed.
+	 *  
+	 * @return expiryTimeInMilliSeconds Expiry time in milliSeconds
+	 */
 	public int getExpiryTimeInMilliSeconds() {
 		return expiryTimeInMilliSeconds;
 	}
 	
 	/*
-	 * This method is thread safe and protected by Write Lock.
-	 * Throws IllegalArgumentException if either Key or Value is Null.
+	 * This method is thread safe and protected by Write Lock.  
 	 * @see lru_cache.Cache#put(java.lang.Object, java.lang.Object)
 	 */
 	@Override
@@ -118,7 +124,6 @@ public class AutoExpiryLRUCache<K, V> implements Cache<K, V> {
 		
 	/*
 	 * This method is thread safe and protected by Read Lock.
-	 * Throws IllegalArgumentException if Key is Null.
 	 * @see lru_cache.Cache#get(java.lang.Object)
 	 */
 	@Override
@@ -144,7 +149,6 @@ public class AutoExpiryLRUCache<K, V> implements Cache<K, V> {
 	}
 	
 	/*
-	 * This is a sensitive operation. This method clears all the entries from the cache.
 	 * This method is thread safe and protected by Write Lock.
 	 * Running time complexity of the method is O(n).
 	 * @see lru_cache.Cache#clear()
@@ -160,7 +164,6 @@ public class AutoExpiryLRUCache<K, V> implements Cache<K, V> {
 	}
 	
 	/*
-	 * Call this method to remove an entry from the cache.
 	 * This method is thread safe and protected by Write Lock. 
 	 * @see lru_cache.Cache#invalidateEntry()
 	 */
@@ -196,8 +199,7 @@ public class AutoExpiryLRUCache<K, V> implements Cache<K, V> {
 	
 	/*
 	 * This is a costly operation. Use it only for testing or debugging.
-	 * This method is not thread safe.
-	 * Running time complexity of the method is O(n).
+	 * This method is not thread safe.Running time complexity of the method is O(n).
 	 * @see lru_cache.Cache#printCacheEntries()
 	 */
 	@Override
@@ -210,10 +212,12 @@ public class AutoExpiryLRUCache<K, V> implements Cache<K, V> {
 		}
 		System.out.println("*******************************");
 	}
-		
-	/*
+	
+	/**
 	 * ValueWrapper is a nested static class that contains actual value 
 	 * and the time stamp when the key was last accessed.
+	 * 
+	 * @param <V> The type of value maintained by the Cache
 	 */
 	private static class ValueWrapper<V> {
 		
@@ -230,9 +234,9 @@ public class AutoExpiryLRUCache<K, V> implements Cache<K, V> {
 		}
 		
 	}
-	
-	/*
-	 *  Inner class to remove all expired entries from cache.
+
+	/**
+	 * Inner class to remove all expired entries from cache.
 	 */
 	private class CacheCleaner implements Runnable {
 		
