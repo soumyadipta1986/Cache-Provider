@@ -36,15 +36,23 @@ public class AutoExpiryLRUCache<K, V> implements Cache<K, V> {
 	private final Map<K, ValueWrapper<V>> lruCache;
 	
 	public AutoExpiryLRUCache(int expiryTimeInMilliSeconds) {
+		validateExpiryTime(expiryTimeInMilliSeconds);
+		this.expiryTimeInMilliSeconds = expiryTimeInMilliSeconds;
+		
 		readWriteLock = new ReentrantReadWriteLock();
 		readLock = readWriteLock.readLock();
 		writeLock = readWriteLock.writeLock();
-		this.expiryTimeInMilliSeconds = expiryTimeInMilliSeconds;
 		lruCache = new HashMap<K, ValueWrapper<V>>();
 		CacheCleaner cacheCleaner = new CacheCleaner();
 		Thread cleanupThread = new Thread(cacheCleaner);
 		cleanupThread.setDaemon(true); // Cleanup thread must be a daemon thread
 		cleanupThread.start();
+	}
+	
+	private void validateExpiryTime(int expiryTimeInMilliSeconds) {
+		if (expiryTimeInMilliSeconds <= 0) {
+			throw new IllegalArgumentException("Expiry time must be positive.");
+		}
 	}
 	
 	private void checkNullKey(K key) {
